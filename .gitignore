@@ -1,0 +1,9 @@
+.docker
+.idea
+./runtime
+*.log
+
+config.yaml
+scriptlist
+
+resource
