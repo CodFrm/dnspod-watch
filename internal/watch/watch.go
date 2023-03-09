@@ -55,7 +55,7 @@ func (w *watch) CloseHandle() {
 
 // watch 每分钟检查ip是否可以访问, 无法访问自动暂停记录
 func (w *watch) watch(ctx context.Context, record *dnspod.RecordListItem) {
-	t := time.NewTicker(time.Second)
+	t := time.NewTicker(time.Minute)
 	count := 0
 	for {
 		select {
