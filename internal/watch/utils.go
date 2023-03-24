@@ -5,25 +5,11 @@ import (
 
 	"github.com/codfrm/cago/pkg/logger"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common"
-	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common/profile"
 	dnspod "github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/dnspod/v20210323"
 	"go.uber.org/zap"
 )
 
-func (w *watch) init() (*dnspod.RecordListItem, error) {
-	w.credential = common.NewCredential(
-		w.config.SecretID,
-		w.config.SecretKey,
-	)
-	cpf := profile.NewClientProfile()
-	cpf.HttpProfile.Endpoint = "dnspod.tencentcloudapi.com"
-	var err error
-	w.client, err = dnspod.NewClient(w.credential, "", cpf)
-	if err != nil {
-		logger.Default().Error("NewClient error", zap.Error(err))
-		return nil, err
-	}
-
+func (w *watch) queryRecord(value string) (*dnspod.RecordListItem, error) {
 	// 实例化一个请求对象,每个接口都会对应一个request对象
 	request := dnspod.NewDescribeRecordListRequest()
 
@@ -35,7 +21,7 @@ func (w *watch) init() (*dnspod.RecordListItem, error) {
 		return nil, err
 	}
 	for _, v := range response.Response.RecordList {
-		if *v.Name == w.config.Name && *v.Value == w.config.Value {
+		if *v.Name == w.config.Name && *v.Value == value {
 			logger.Default().Info("record found", zap.Any("record", v))
 			return v, nil
 		}
