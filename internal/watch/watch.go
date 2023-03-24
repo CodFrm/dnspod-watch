@@ -35,7 +35,7 @@ func Watch() cago.Component {
 
 func (w *watch) Start(ctx context.Context, cfg *configs.Config) error {
 	config := &Config{}
-	if err := cfg.Scan("w", config); err != nil {
+	if err := cfg.Scan("watch", config); err != nil {
 		return err
 	}
 	// 获取记录列表
