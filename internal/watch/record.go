@@ -41,6 +41,7 @@ func (r *record) watch(ctx context.Context) {
 			// 检查ip是否可以访问
 			count++
 			if err := r.checkIP(ctx, r.value); err != nil {
+				r.logger.Ctx(ctx).Error("check ip err", zap.Error(err))
 				// 连续3次无法访问,暂停记录
 				if !r.isDisable && count > 3 {
 					count = 0
