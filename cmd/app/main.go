@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"github.com/codfrm/dnspod-watch/pkg/pushcat"
 	"log"
 
 	"github.com/codfrm/cago"
@@ -19,6 +20,7 @@ func main() {
 
 	err = cago.New(ctx, cfg).
 		Registry(cago.FuncComponent(logger.Logger)).
+		Registry(pushcat.Pushcat()).
 		Registry(watch.Watch()).
 		Start()
 	if err != nil {

@@ -2,6 +2,8 @@ package watch
 
 import (
 	"context"
+	"fmt"
+	"github.com/codfrm/dnspod-watch/pkg/pushcat"
 	"net"
 	"time"
 
@@ -52,12 +54,19 @@ func (r *record) watch(ctx context.Context) {
 					request.RecordId = common.Uint64Ptr(*r.record.RecordId)
 					request.Status = common.StringPtr("DISABLE")
 					_, err := r.w.client.ModifyRecordStatus(request)
+					msg := fmt.Sprintf("域名: %s, 记录: %s, ip无法访问,暂停记录", r.domain, r.value)
 					if err != nil {
 						r.logger.Ctx(ctx).Error("modify record status err", zap.Error(err))
+						msg += "\n记录修改失败: " + err.Error()
 					} else {
 						r.logger.Ctx(ctx).Info("modify record status success",
 							zap.String("status", "DISABLE"))
 						r.isDisable = true
+					}
+					if err := pushcat.Send(ctx, "ip无法访问,暂停记录", msg); err != nil {
+						r.logger.Ctx(ctx).Error("发送通知错误",
+							zap.Error(err),
+							zap.String("msg", msg))
 					}
 				}
 			} else if r.isDisable && count > 3 {
@@ -69,12 +78,19 @@ func (r *record) watch(ctx context.Context) {
 				request.RecordId = common.Uint64Ptr(*r.record.RecordId)
 				request.Status = common.StringPtr("ENABLE")
 				_, err := r.w.client.ModifyRecordStatus(request)
+				msg := fmt.Sprintf("域名: %s, 记录: %s, ip可以访问,开启记录", r.domain, r.value)
 				if err != nil {
 					r.logger.Ctx(ctx).Error("modify record status err", zap.Error(err))
+					msg += "\n记录修改失败: " + err.Error()
 				} else {
 					r.logger.Ctx(ctx).Info("modify record status success",
 						zap.String("status", "ENABLE"))
 					r.isDisable = false
+				}
+				if err := pushcat.Send(ctx, "ip可以访问,开启记录", msg); err != nil {
+					r.logger.Ctx(ctx).Error("发送通知错误",
+						zap.Error(err),
+						zap.String("msg", msg))
 				}
 			} else {
 				r.logger.Ctx(ctx).Info("ip is ok")
