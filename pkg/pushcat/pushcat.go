@@ -5,10 +5,11 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
-	"github.com/codfrm/cago"
-	"github.com/codfrm/cago/configs"
 	"io"
 	"net/http"
+
+	"github.com/codfrm/cago"
+	"github.com/codfrm/cago/configs"
 )
 
 type Config struct {

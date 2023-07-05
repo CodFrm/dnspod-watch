@@ -2,13 +2,13 @@ package main
 
 import (
 	"context"
-	"github.com/codfrm/dnspod-watch/pkg/pushcat"
 	"log"
 
 	"github.com/codfrm/cago"
 	"github.com/codfrm/cago/configs"
 	"github.com/codfrm/cago/pkg/logger"
 	"github.com/codfrm/dnspod-watch/internal/watch"
+	"github.com/codfrm/dnspod-watch/pkg/pushcat"
 )
 
 func main() {

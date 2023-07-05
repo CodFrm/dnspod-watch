@@ -3,11 +3,11 @@ package watch
 import (
 	"context"
 	"fmt"
-	"github.com/codfrm/dnspod-watch/pkg/pushcat"
 	"net"
 	"time"
 
 	"github.com/codfrm/cago/pkg/logger"
+	"github.com/codfrm/dnspod-watch/pkg/pushcat"
 	"github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/common"
 	dnspod "github.com/tencentcloud/tencentcloud-sdk-go/tencentcloud/dnspod/v20210323"
 	"go.uber.org/zap"

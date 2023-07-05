@@ -12,6 +12,9 @@ endif
 lint: check-golangci-lint
 	golangci-lint run
 
+lint-fix: check-golangci-lint
+	golangci-lint run --fix
+
 test: lint
 	go test -v ./...
 
