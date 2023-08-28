@@ -58,7 +58,7 @@ func (w *watch) Start(ctx context.Context, cfg *configs.Config) error {
 	}
 	for _, c := range w.config.CheckDomain {
 		for _, v := range c.Value {
-			r, err := w.queryRecord(v)
+			r, err := w.queryRecord(c.Domain, c.Name, v)
 			if err != nil {
 				return err
 			}

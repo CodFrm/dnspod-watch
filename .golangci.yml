@@ -1,10 +1,5 @@
-linters-settings:
-  golint:
-    min-confidence: 0
-  misspell:
-    locale: US
 linters:
-  disable-all: true
+  disable-all: false
   enable:
     - typecheck
     - goimports
@@ -12,10 +7,39 @@ linters:
     - govet
     - ineffassign
     - gosimple
-    - deadcode
-    - structcheck
     - unused
     - errcheck
+    - staticcheck
+    - gofmt
+    - bodyclose
+    - loggercheck
+    - nilerr
+    - prealloc
+    - predeclared
+    - durationcheck
+    - makezero
+    - exportloopref
+    - rowserrcheck
+    - stylecheck
+    - gosec
+    - nolintlint
 
 run:
-  timeout: 5m
+  timeout: 10m
+
+linters-settings:
+  stylecheck:
+    checks: ["-ST1003"]
+  gosec:
+    excludes:
+      - G306
+      - G401
+      - G402
+      - G404
+      - G501
+      - G505
+  golint:
+    min-confidence: 0
+  misspell:
+    locale: US
+
