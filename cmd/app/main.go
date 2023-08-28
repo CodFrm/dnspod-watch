@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"github.com/codfrm/cago/pkg/component"
 	"log"
 
 	"github.com/codfrm/cago"
@@ -19,6 +20,7 @@ func main() {
 	}
 
 	err = cago.New(ctx, cfg).
+		Registry(component.Logger()).
 		Registry(cago.FuncComponent(logger.Logger)).
 		Registry(pushcat.Pushcat()).
 		Registry(watch.Watch()).
