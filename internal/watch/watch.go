@@ -12,12 +12,16 @@ import (
 	"go.uber.org/zap"
 )
 
+type CheckDomain struct {
+	Domain string   // 域名
+	Name   string   // 记录名
+	Value  []string // 记录值
+}
+
 type Config struct {
-	SecretID  string   `yaml:"secretID"`  // 账号 secret id
-	SecretKey string   `yaml:"secretKey"` // 账号 secret key
-	Domain    string   // 域名
-	Name      string   // 记录名
-	Value     []string // 记录值
+	SecretID    string         `yaml:"secretID"`  // 账号 secret id
+	SecretKey   string         `yaml:"secretKey"` // 账号 secret key
+	CheckDomain []*CheckDomain `yaml:"checkDomain"`
 }
 
 type watch struct {
@@ -52,13 +56,15 @@ func (w *watch) Start(ctx context.Context, cfg *configs.Config) error {
 		logger.Default().Error("NewClient error", zap.Error(err))
 		return err
 	}
-	for _, v := range w.config.Value {
-		r, err := w.queryRecord(v)
-		if err != nil {
-			return err
+	for _, c := range w.config.CheckDomain {
+		for _, v := range c.Value {
+			r, err := w.queryRecord(v)
+			if err != nil {
+				return err
+			}
+			record := newRecord(w, r, c.Domain, v)
+			go record.watch(ctx)
 		}
-		record := newRecord(w, r, config.Domain, v)
-		go record.watch(ctx)
 	}
 	return nil
 }
