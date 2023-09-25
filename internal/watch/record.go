@@ -36,6 +36,7 @@ func newRecord(w *watch, r *dnspod.RecordListItem, domain, value string) *record
 // watch 每分钟检查ip是否可以访问, 无法访问自动暂停记录
 func (r *record) watch(ctx context.Context) {
 	t := time.NewTicker(time.Minute)
+	lastSwitch := time.Now()
 	count := 0
 	for {
 		select {
@@ -70,6 +71,13 @@ func (r *record) watch(ctx context.Context) {
 					}
 				}
 			} else if r.isDisable && count > 3 {
+				// 上次切换时间超过30分钟才能再次切换
+				if time.Since(lastSwitch) < time.Minute*30 {
+					r.logger.Ctx(ctx).Info("ip可以访问,但是上次切换时间不足30分钟")
+					continue
+				}
+				lastSwitch = time.Now()
+
 				// 检查连续成功3次,开启记录
 				count = 0
 				request := dnspod.NewModifyRecordStatusRequest()
