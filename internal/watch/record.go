@@ -44,7 +44,7 @@ func newRecord(w *watch, r *dnspod.RecordListItem, domain *CheckDomain) (*record
 
 // watch 每分钟检查ip是否可以访问, 无法访问自动暂停记录
 func (r *record) watch(ctx context.Context) {
-	t := time.NewTicker(time.Second)
+	t := time.NewTicker(time.Minute)
 	s := newRetry()
 	loadBalance := newRetry()
 	for {
