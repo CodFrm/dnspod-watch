@@ -12,10 +12,17 @@ import (
 	"go.uber.org/zap"
 )
 
+type LoadBalance struct {
+	Value string // 记录值
+	Line  string // 线路
+}
+
 type CheckDomain struct {
-	Domain string   // 域名
-	Name   string   // 记录名
-	Value  []string // 记录值
+	Domain      string       // 域名
+	Name        string       // 记录名
+	Value       string       // 记录值
+	Line        string       // 线路
+	LoadBalance *LoadBalance `yaml:"loadBalance"` // 负载均衡
 }
 
 type Config struct {
@@ -57,14 +64,15 @@ func (w *watch) Start(ctx context.Context, cfg *configs.Config) error {
 		return err
 	}
 	for _, c := range w.config.CheckDomain {
-		for _, v := range c.Value {
-			r, err := w.queryRecord(c.Domain, c.Name, v)
-			if err != nil {
-				return err
-			}
-			record := newRecord(w, r, c.Domain, v)
-			go record.watch(ctx)
+		r, err := w.queryRecord(c.Domain, c.Name, c.Value, c.Line)
+		if err != nil {
+			return err
 		}
+		record, err := newRecord(w, r, c)
+		if err != nil {
+			return err
+		}
+		go record.watch(ctx)
 	}
 	return nil
 }
