@@ -60,7 +60,7 @@ func (r *record) watch(ctx context.Context) {
 				// 增加负载均衡
 				if r.domain.LoadBalance != nil {
 					// 判断延迟是否超过200毫秒
-					loadBalance.check(duration > time.Millisecond*100, func() error {
+					_ = loadBalance.check(duration > time.Millisecond*100, func() error {
 						// 开启记录
 						msg := fmt.Sprintf("开启负载均衡 域名: %s, 记录: %s",
 							r.domain.Domain, r.domain.LoadBalance.Value)
